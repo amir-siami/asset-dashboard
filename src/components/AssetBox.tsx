@@ -1,15 +1,23 @@
 import React from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
 
 import {
   faGlobe,
   faBolt,
   faBug,
-  faChartSimple,
   faCloud,
   faArrowUpLong,
 } from "@fortawesome/free-solid-svg-icons";
+
+ChartJS.register(BarElement, CategoryScale, LinearScale);
 
 interface AssetBoxProps {
   type: string;
@@ -64,6 +72,53 @@ const AssetBox: React.FC<AssetBoxProps> = ({
       />
     );
   }
+
+  const liveData = {
+    labels: live.map((_, index) => `Data ${index + 1}`),
+    datasets: [
+      {
+        data: live,
+        backgroundColor: "rgb(75, 192, 192)",
+      },
+    ],
+  };
+
+  const monitoredData = {
+    labels: monitored.map((_, index) => `Data ${index + 1}`),
+    datasets: [
+      {
+        data: monitored,
+        backgroundColor: "rgb(75, 192, 192)",
+      },
+    ],
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
 
   return (
     <Card
@@ -163,10 +218,14 @@ const AssetBox: React.FC<AssetBoxProps> = ({
             <Typography>Live</Typography>
             <Typography sx={{ marginLeft: "8px" }}>{liveSum}</Typography>
           </Box>
-          <FontAwesomeIcon
-            icon={faChartSimple}
-            style={{ marginRight: "8px", fontSize: "24px" }}
-          />
+          <Box
+            sx={{
+              width: "80px",
+              height: "40px",
+            }}
+          >
+            <Bar data={liveData} options={chartOptions} />
+          </Box>
 
           <Box
             sx={{
@@ -179,11 +238,14 @@ const AssetBox: React.FC<AssetBoxProps> = ({
             <Typography>Monitored</Typography>
             <Typography sx={{ marginLeft: "8px" }}>{monitoredSum}</Typography>
           </Box>
-
-          <FontAwesomeIcon
-            icon={faChartSimple}
-            style={{ marginRight: "8px", fontSize: "24px" }}
-          />
+          <Box
+            sx={{
+              width: "80px",
+              height: "40px",
+            }}
+          >
+            <Bar data={monitoredData} options={chartOptions} />
+          </Box>
         </Box>
 
         <Box
